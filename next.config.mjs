@@ -1,5 +1,7 @@
 import { remarkCodeHike, recmaCodeHike } from "codehike/mdx"
 import createMDX from "@next/mdx"
+import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -13,14 +15,15 @@ const nextConfig = {
 
 /** @type {import('codehike/mdx').CodeHikeConfig} */
 const chConfig = {
-  components: { code: "Code" },
+  components: { code: "Code", inlineCode: "InlineCode" },
 }
 
 const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [[remarkCodeHike, chConfig]],
+    remarkPlugins: [[remarkCodeHike, chConfig], [remarkMath]],
     recmaPlugins: [[recmaCodeHike, chConfig]],
+    rehypePlugins: [[rehypeKatex]],
     jsx: true,
   },
 })

@@ -1,0 +1,15 @@
+.hover-container:has([data-hover="$1"]:hover) [data-line]:not([data-line="$1"]),
+.hover-container:has([data-hover="$2"]:hover) [data-line]:not([data-line="$2"]),
+.hover-container:has([data-hover="$3"]:hover) [data-line]:not([data-line="$3"]),
+.hover-container:has([data-hover="$4"]:hover) [data-line]:not([data-line="$4"]),
+.hover-container:has([data-hover="$5"]:hover) [data-line]:not([data-line="$5"]),
+.hover-container:has([data-hover="$6"]:hover) [data-line]:not([data-line="$6"]),
+.hover-container:has([data-hover="$7"]:hover) [data-line]:not([data-line="$7"]),
+.hover-container:has([data-hover="$8"]:hover) [data-line]:not([data-line="$8"]),
+.hover-container:has([data-hover="$9"]:hover) [data-line]:not([data-line="$9"]),
+.hover-container:has([data-hover="one"]:hover)
+  [data-line]:not([data-line="one"]),
+.hover-container:has([data-hover="$10"]:hover)
+  [data-line]:not([data-line="$10"]) {
+  opacity: 0.45;
+}
