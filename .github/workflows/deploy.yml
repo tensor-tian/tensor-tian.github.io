@@ -27,19 +27,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22" # 使用你 package.json 中指定的 Node 版本
-          cache: "npm"
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 10.15.0 # 或你项目实际用的版本
+
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build with Next.js
-        # 这里将 BASE_PATH Secret 作为环境变量传入构建过程
-        run: pnpm run build
-        env:
-          BASE_PATH: ${{ secrets.BASE_PATH }} # 读取我们在仓库中设置的 Secret
+      # - name: Build with Next.js
+      #   # 这里将 BASE_PATH Secret 作为环境变量传入构建过程
+      #   run: pnpm run build
+      #   env:
+      #     BASE_PATH: ${{ secrets.BASE_PATH }} # 读取我们在仓库中设置的 Secret
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
