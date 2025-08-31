@@ -2,8 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['main'] # 触发分支，根据你的实际情况修改，通常是 main 或 master
-  workflow_dispatch:   # 允许在 GitHub 页面上手动触发工作流
+    branches: ["main"] # 触发分支，根据你的实际情况修改，通常是 main 或 master
+  workflow_dispatch: # 允许在 GitHub 页面上手动触发工作流
 
 # 设置 GITHUB_TOKEN 的权限，让 Action 可以部署到 GitHub Pages
 permissions:
@@ -13,7 +13,7 @@ permissions:
 
 # 允许一个并发部署，但排队的是最新的一次提交
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
@@ -26,15 +26,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # 使用你 package.json 中指定的 Node 版本
-          cache: 'npm'
-
+          node-version: "22" # 使用你 package.json 中指定的 Node 版本
+          cache: "npm"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.15.0 # 或你项目实际用的版本
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Build with Next.js
         # 这里将 BASE_PATH Secret 作为环境变量传入构建过程
-        run: npm run build
+        run: pnpm run build
         env:
           BASE_PATH: ${{ secrets.BASE_PATH }} # 读取我们在仓库中设置的 Secret
 
