@@ -1,4 +1,4 @@
-import { Pre, RawCode, highlight } from "codehike/code"
+import { Pre, RawCode, highlight, HighlightedCode } from "codehike/code"
 import { callout } from "./annotations/callout"
 import { mark } from "./annotations/mark"
 import { className } from "./annotations/classname"
@@ -12,12 +12,19 @@ import { theme } from "./config"
 import { wordWrap } from "./annotations/word-wrap"
 
 export async function Code({ codeblock }: { codeblock: RawCode }) {
-  const highlighted = await highlight(codeblock, theme)
+  const code = await highlight(codeblock, theme)
+  // const [code, setCode] = useState<HighlightedCode | null>(null)
+  // useEffect(() => {
+  //   highlight(codeblock, theme).then(setCode)
+  // }, [codeblock])
+  // if (!code) {
+  //   return null
+  // }
   return (
     <div className="relative">
-      <CopyButton text={highlighted.code} />
+      <CopyButton text={code.code} />
       <Pre
-        code={highlighted}
+        code={code}
         handlers={[
           callout,
           mark,

@@ -1,9 +1,8 @@
-"use client"
-import React, { useContext } from "react"
-import { TreeContext } from "./context"
+import React from "react"
+import { Focusable } from "./focus-context"
+// import { Selectable } from "./tree-selection.client"
 
 export function ListItem(props: { children: React.ReactNode }) {
-  const { onClick } = useContext(TreeContext)
   let children = React.Children.toArray(props.children)
   const first = children[0]
   if (typeof first !== "string") {
@@ -20,6 +19,7 @@ export function ListItem(props: { children: React.ReactNode }) {
     }
     return true
   })
+  console.log("parse focus:", res[1])
   let last = children.length > 0 ? children[children.length - 1] : null
   const isList =
     React.isValidElement(last) && (last.type === "ul" || last.type === "ol")
@@ -27,11 +27,13 @@ export function ListItem(props: { children: React.ReactNode }) {
   const content = isList ? children.slice(0, -1) : children
   const listChild = isList ? last : null
   return (
-    <li data-focus={res[1]} onClick={onClick} className=" ">
-      <span className="hover:bg-zinc-700 block w-full cursor-pointer">
-        {content}
-      </span>
-      {listChild}
-    </li>
+    <Focusable>
+      <li data-focus={res[1]}>
+        <span className="hover:bg-zinc-700 block w-full cursor-pointer">
+          {content}
+        </span>
+        {listChild}
+      </li>
+    </Focusable>
   )
 }
