@@ -32,7 +32,7 @@ export function List(props: any) {
           <Selection
             from={steps.map((step) =>
               step.code ? (
-                <Code codeblock={step.code} focusRange="" />
+                <Code codeblock={step.code} />
               ) : Array.isArray(step.codes) ? (
                 <CodeTabs codes={step.codes} />
               ) : null,

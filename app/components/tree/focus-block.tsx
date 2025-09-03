@@ -1,3 +1,4 @@
+"use client"
 import { Focusable } from "./focus-context"
 import React from "react"
 import { MDXProvider } from "@mdx-js/react"
@@ -5,18 +6,18 @@ import { MDXProvider } from "@mdx-js/react"
 export function P(props: React.HTMLAttributes<HTMLParagraphElement>) {
   let children = React.Children.toArray(props.children)
   const first = children[0]
-  console.log(children[0])
   if (typeof first !== "string") {
     return <p>{children}</p>
   }
   const res = first.match(/!focus\((.*)\)/)
+  console.log("p:", res)
   if (!res || !res[1]) {
     return <p>{children}</p>
   }
   children[0] = first.slice(res[0].length)
   return (
     <Focusable>
-      <p>{children}</p>
+      <p data-focus={res[1]}>{children}</p>
     </Focusable>
   )
 }
@@ -56,11 +57,15 @@ export function ListItem(props: { children: React.ReactNode }) {
     </Focusable>
   )
 }
-const components = {
+const FocusableComponents = {
   p: P,
   li: ListItem,
 }
 
-export function FocusableContent({ children }: { children: React.ReactNode }) {
-  return <MDXProvider components={components}>{children}</MDXProvider>
+export function FocusableMDXProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return <MDXProvider components={FocusableComponents}>{children}</MDXProvider>
 }

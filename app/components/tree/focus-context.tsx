@@ -1,5 +1,6 @@
 "use client"
-import React, { HTMLAttributes, useCallback, useContext } from "react"
+import { cn } from "@/lib/utils"
+import React, { HTMLAttributes, useCallback, useContext, useState } from "react"
 
 type FocusState = {
   focus: string
@@ -27,26 +28,36 @@ export function FocusProvider({
 }
 export function Focusable({
   children,
+  className,
   ...rest
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { setFocus } = useContext(FocusContext)
+  const [hl, setHL] = useState<Boolean>(false)
 
-  const onClick = React.useCallback(
+  const onMouseEnter = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation() // 阻止事件冒泡
-      const child = e.currentTarget.firstElementChild as HTMLElement
-      if (!child) return
-      setFocus(child.dataset.focus || "")
+      setFocus(e.currentTarget.dataset.focus || "")
+      setHL(true)
     },
     [setFocus],
   )
   const onMouseLeave = React.useCallback(() => {
     setFocus("")
+    setHL(false)
   }, [setFocus])
   return (
-    <div onClick={onClick} onMouseLeave={onMouseLeave} {...rest}>
+    <span
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      {...rest}
+      className={cn(
+        hl && "bg-zinc-700 underline underline-offset-4",
+        className,
+      )}
+    >
       {children}
-    </div>
+    </span>
   )
 }
 

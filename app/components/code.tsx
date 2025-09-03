@@ -2,7 +2,6 @@ import { Pre, RawCode, highlight, HighlightedCode } from "codehike/code"
 import { callout } from "./annotations/callout"
 import { mark } from "./annotations/mark"
 import { className } from "./annotations/classname"
-import { hover } from "./annotations/hover"
 import { focus } from "./annotations/focus"
 import "./styles.css"
 import { CopyButton } from "./copy-button"
@@ -25,15 +24,7 @@ export async function Code({ codeblock }: { codeblock: RawCode }) {
       <CopyButton text={code.code} />
       <Pre
         code={code}
-        handlers={[
-          callout,
-          mark,
-          className,
-          hover,
-          lineNumbers,
-          focus,
-          wordWrap,
-        ]}
+        handlers={[callout, mark, className, focus, wordWrap]}
         className="border border-zinc-800"
       />
     </div>

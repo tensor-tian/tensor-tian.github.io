@@ -13,7 +13,7 @@ function useScrollToFocus(ref: React.RefObject<HTMLPreElement>) {
   const firstRender = useRef(true)
   useLayoutEffect(() => {
     if (ref.current) {
-      // find all descendants whith data-focus="true"
+      // find all descendants with data-focus="true"
       const focusedElements = ref.current.querySelectorAll(
         "[data-focus=true]",
       ) as NodeListOf<HTMLElement>

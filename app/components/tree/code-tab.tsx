@@ -12,7 +12,7 @@ export function CodeTabs(props: {
   }
   return (
     <Tabs
-      key={codes[0]?.meta}
+      key={codes[0]?.meta + "-" + codes.length}
       defaultValue={codes[0]?.meta}
       className="dark border-zinc-700 border rounded mx-h-[50vh]"
     >
@@ -26,11 +26,11 @@ export function CodeTabs(props: {
           )
         })}
       </TabsList>
-      {codes.map((tab) => {
+      {codes.map((tab, i) => {
         if (!tab) return null
         return (
           <TabsContent key={tab.meta} value={tab.meta} className="mt-0">
-            <Code codeblock={tab} focusRange="" height={props.height} />
+            <Code codeblock={tab} height={props.height} tabIndex={i} />
           </TabsContent>
         )
       })}

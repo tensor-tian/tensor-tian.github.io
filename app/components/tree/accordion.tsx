@@ -1,4 +1,3 @@
-"use client"
 import { parseProps } from "codehike/blocks"
 
 import {
@@ -16,19 +15,10 @@ import { Code } from "./code"
 import { StepsSchema } from "./steps"
 import { CodeTabs } from "./code-tab"
 import { cn } from "@/lib/utils"
-// import { MDXProvider } from "@mdx-js/react"
-// import { P, ListItem } from "./focus-block"
-
-// const Components = {
-//   p: P,
-//   li: ListItem,
-// }
-
 export function Accordion(props: any) {
   const { steps } = parseProps(props, StepsSchema)
   const h = maxHeight(props.className)
   return (
-    // <MDXProvider components={Components}>
     <FocusProvider>
       <AccordionSelectionProvider className={cn("flex", props.className)}>
         <ACD type="single" collapsible className="flex-1 ">
@@ -44,7 +34,7 @@ export function Accordion(props: any) {
           <AccordionSelectionContent
             content={steps.map((step) =>
               step.code ? (
-                <Code codeblock={step.code} focusRange="" height={h} />
+                <Code codeblock={step.code} height={h} />
               ) : Array.isArray(step.codes) ? (
                 <CodeTabs codes={step.codes} height={h} />
               ) : null,
@@ -53,7 +43,6 @@ export function Accordion(props: any) {
         </div>
       </AccordionSelectionProvider>
     </FocusProvider>
-    // </MDXProvider>
   )
 }
 

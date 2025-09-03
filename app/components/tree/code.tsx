@@ -1,6 +1,6 @@
 "use client"
 import { Pre, highlight, BlockAnnotation, HighlightedCode } from "codehike/code"
-import { hover, lineNumbers, focus, wordWrap } from "../annotations"
+import { lineNumbers, focus, wordWrap } from "../annotations"
 import { CopyButton } from "../copy-button"
 import React, { CSSProperties, useEffect } from "react"
 import { CodeBlockType } from "./block"
@@ -12,24 +12,24 @@ export const CodeContext = React.createContext<Range[]>([])
 export type CodeProps = {
   codeblock: CodeBlockType
   height?: number
+  tabIndex?: number
 }
 
 type CustomHighlightedCode = HighlightedCode & {
   lineRanges: Range[]
 }
 
-export function Code({ codeblock, height }: CodeProps) {
+export function Code({ codeblock, height, tabIndex }: CodeProps) {
   const [code, setCode] = React.useState<CustomHighlightedCode | null>(null)
   const lineRanges = codeblock.lineRanges
   const focusRange = useFocusRange()
   useEffect(() => {
     highlight(codeblock, "github-dark").then((highlighted) => {
       const lineRanges = codeblock.lineRanges
-      const annotations = genFocusAnnotation(focusRange, lineRanges)
-      console.log(focusRange, annotations)
+      const annotations = genFocusAnnotation(focusRange, lineRanges, tabIndex)
       setCode({ ...highlighted, annotations, lineRanges })
     })
-  }, [codeblock, focusRange])
+  }, [codeblock, focusRange, tabIndex])
 
   if (!code) {
     return null
@@ -45,7 +45,7 @@ export function Code({ codeblock, height }: CodeProps) {
         <Pre
           code={code}
           className="max-h-[70vh] min-h-[18rem] bg-zinc-900 h-full m-0  border-zinc-700 "
-          handlers={[hover, lineNumbers, focus, wordWrap]}
+          handlers={[lineNumbers, focus, wordWrap]}
           style={style}
         />
       </CodeContext.Provider>
@@ -53,14 +53,29 @@ export function Code({ codeblock, height }: CodeProps) {
   )
 }
 
+const TabIndexReg = /^@(\d+)/
+
 function genFocusAnnotation(
   rangeStr: string,
   lineRanges: Range[],
+  tabIndex = 0,
 ): BlockAnnotation[] {
-  if (rangeStr.length == 0) {
+  if (rangeStr.length === 0) {
     return []
   }
+  const indexRes = rangeStr.match(TabIndexReg)
+  let s = 0
+  let focusTabIndex = 0
+  if (indexRes) {
+    s = indexRes[0].length
+    focusTabIndex = parseInt(indexRes[1], 10)
+  }
+  if (focusTabIndex !== tabIndex || rangeStr.charAt(s) !== "#") {
+    return []
+  }
+
   const ranges = rangeStr
+    .substring(s + 1)
     .split(",")
     .map((r) => r.split(":").map((x) => parseInt(x, 10)))
     .map((r) => (r.length == 2 ? r : [r[0], r[0]]))
@@ -74,7 +89,7 @@ function genFocusAnnotation(
       ranges[k][i % 2] = offset + (n - from)
       i++
     } else if (n > to) {
-      offset += from - to
+      offset += to - from + 1
       j++
     }
   }
