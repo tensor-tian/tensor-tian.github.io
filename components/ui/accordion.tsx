@@ -77,7 +77,7 @@ export function SelectableAccordionTrigger({
     <AccordionPrimitive.Header className="flex mt-2 ">
       <AccordionPrimitive.Trigger
         className={cn(
-          "flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180 outline-none pb-1 ",
+          "flex flex-1 items-center justify-between py-4 text-base font-medium transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180 outline-none pb-1 ",
           className,
         )}
         {...props}
@@ -100,7 +100,7 @@ const AccordionContent = React.forwardRef<
   return (
     <AccordionPrimitive.Content
       ref={ref}
-      className="overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down  pl-2 pr-2"
+      className="overflow-hidden text-base data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down  pl-2 pr-2"
       {...props}
     >
       <div className={cn("pb-2 pt-0", className)}>{children}</div>

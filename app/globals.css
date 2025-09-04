@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 @import "katex/dist/katex.min.css";
+@import "@radix-ui/themes/styles.css";
+
 .katex {
   font-size: 1em;
 }
