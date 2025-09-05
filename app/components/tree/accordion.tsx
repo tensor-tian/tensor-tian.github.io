@@ -11,21 +11,22 @@ import {
 import { FocusProvider } from "./focus-context"
 
 import React from "react"
-import { Code } from "./code"
-import { StepsSchema } from "./steps"
+import { Code } from "./code.client"
 import { CodeTabs } from "./code-tab"
 import { cn } from "@/lib/utils"
-export function Accordion(props: any) {
-  const { steps } = parseProps(props, StepsSchema)
+import { parseSteps } from "./block"
+
+export async function Accordion(props: any) {
   const h = maxHeight(props.className)
+  const steps = await parseSteps(props)
   return (
     <FocusProvider>
       <AccordionSelectionProvider className={cn("flex", props.className)}>
         <ACD type="single" collapsible className="flex-1 ">
           {steps.map((step, i) => (
             <AccordionItem value={String(i)} key={i}>
-              <AccordionTrigger index={i}>{step.title}</AccordionTrigger>
-              <AccordionContent>{step.children}</AccordionContent>
+              <AccordionTrigger index={i}>{step?.title}</AccordionTrigger>
+              <AccordionContent>{step?.children}</AccordionContent>
             </AccordionItem>
           ))}
         </ACD>
@@ -33,9 +34,9 @@ export function Accordion(props: any) {
         <div className="w-[40vw] max-w-xl ml-4">
           <AccordionSelectionContent
             content={steps.map((step) =>
-              step.code ? (
-                <Code codeblock={step.code} height={h} />
-              ) : Array.isArray(step.codes) ? (
+              step?.code ? (
+                <Code hlCode={step.code} height={h} />
+              ) : Array.isArray(step?.codes) ? (
                 <CodeTabs codes={step.codes} height={h} />
               ) : null,
             )}

@@ -19,7 +19,7 @@
 _`func indexOf(nums []int, target int) int`_
 
 <Tree>
-#### !tree
+#### !left
 1. [初始化搜索边界 _`l`_ 和 _`r`_ 为数组的第一个和最后一个元素坐标](!focus#6) 。 
 2. 循环搜索：
   - [计算中点 _`m`_](!focus#8)，判断中点值 _go`nums[m]`_ 与 _`target`_ 的关系
@@ -29,7 +29,8 @@ _`func indexOf(nums []int, target int) int`_
 	- [循环条件：_go`l <= r`_，当 _go`l == r + 1`_ 时，搜索区间为空，结束循环](!focus#7,15)。
 3. [循环结束仍未找到目标值，返回 _`-1`_](!focus#17)
 
-```go !code !lines(5:18)
+#### !right
+```go !!codes !lines(5:18) binary-search.go
 !from ./binary-search.go 5:18
 ```
 
@@ -75,7 +76,7 @@ _`func binarySearch(n int, f func(int) bool) int`_
 #### 左闭右闭
 
 <Tree>
-##### !tree
+##### !left
 - 区间变量的定义：
   - [_`l`_: 当前搜索区间中 **「可能满足条件的最小索引」**。](!focus#22)
   - [_`r`_: 当前搜索区间中 **「可能不满足条件的最大索引」**](!focus#22)。
@@ -88,7 +89,8 @@ _`func binarySearch(n int, f func(int) bool) int`_
   - _`r`_ 变成了 **「不满足条件的最大索引」**
 - [_`l`_ 现在是 「满足条件的最小索引」，所以返回值为 _`l`_](!focus#31)。
 
-```go !code !lines(20:32)
+##### !right
+```go !!codes !lines(20:32) binary-search.go
 !from ./binary-search.go 20:32
 ```
 
@@ -97,7 +99,7 @@ _`func binarySearch(n int, f func(int) bool) int`_
 #### 左闭右开
 
 <Tree>
-##### !tree
+##### !left
 
 - 区间变量的定义：
   - [_`l`_: 当前搜索区间中 **「可能满足条件的最小索引」**](!focus#36)。
@@ -111,7 +113,8 @@ _`func binarySearch(n int, f func(int) bool) int`_
   - _`r`_ 也变成了 **「满足条件的最小索引」**
 - [_`l`_ 现在是 「满足条件的最小索引」，所以返回值为 _`l`_](!focus#45)。
 
-```go !code !lines(34:46)
+##### !right 
+```go !!codes !lines(34:46) binary-search.go
 !from ./binary-search.go 34:46
 ```
 

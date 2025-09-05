@@ -1,36 +1,23 @@
-"use client"
-import { Pre, highlight, BlockAnnotation, HighlightedCode } from "codehike/code"
+import { Pre, BlockAnnotation } from "codehike/code"
 import { lineNumbers, focus, wordWrap } from "../annotations"
 import { CopyButton } from "../copy-button"
-import React, { CSSProperties, useEffect } from "react"
-import { CodeBlockType } from "./block"
-import { useFocusRange } from "./focus-context"
-
-type Range = { from: number; to: number }
-export const CodeContext = React.createContext<Range[]>([])
+import React, { CSSProperties } from "react"
+import { HighlightedCodeType, Range } from "./block"
 
 export type CodeProps = {
-  codeblock: CodeBlockType
+  hlCode: HighlightedCodeType
   height?: number
   tabIndex?: number
+  focusRange: string | undefined
 }
 
-type CustomHighlightedCode = HighlightedCode & {
-  lineRanges: Range[]
-}
-
-export function Code({ codeblock, height, tabIndex }: CodeProps) {
-  const [code, setCode] = React.useState<CustomHighlightedCode | null>(null)
-  const lineRanges = codeblock.lineRanges
-  const focusRange = useFocusRange()
-  useEffect(() => {
-    highlight(codeblock, "github-dark").then((highlighted) => {
-      const lineRanges = codeblock.lineRanges
-      const annotations = genFocusAnnotation(focusRange, lineRanges, tabIndex)
-      setCode({ ...highlighted, annotations, lineRanges })
-    })
-  }, [codeblock, focusRange, tabIndex])
-
+export function Code({ hlCode, height, tabIndex, focusRange }: CodeProps) {
+  const annotations = genFocusAnnotation(
+    hlCode.lineRanges,
+    tabIndex,
+    focusRange,
+  )
+  const code = { ...hlCode, annotations }
   if (!code) {
     return null
   }
@@ -41,14 +28,12 @@ export function Code({ codeblock, height, tabIndex }: CodeProps) {
   return (
     <div className="relative">
       <CopyButton text={code.code} />
-      <CodeContext.Provider value={lineRanges}>
-        <Pre
-          code={code}
-          className="max-h-[70vh] min-h-[18rem] bg-zinc-900 h-full m-0  border-zinc-700 "
-          handlers={[lineNumbers, focus, wordWrap]}
-          style={style}
-        />
-      </CodeContext.Provider>
+      <Pre
+        code={code}
+        className="max-h-[70vh] min-h-[18rem] bg-zinc-900 h-full m-0  border-zinc-700 "
+        handlers={[lineNumbers, focus, wordWrap]}
+        style={style}
+      />
     </div>
   )
 }
@@ -56,11 +41,11 @@ export function Code({ codeblock, height, tabIndex }: CodeProps) {
 const TabIndexReg = /^@(\d+)/
 
 function genFocusAnnotation(
-  rangeStr: string,
   lineRanges: Range[],
   tabIndex = 0,
+  rangeStr?: string,
 ): BlockAnnotation[] {
-  if (rangeStr.length === 0) {
+  if (!rangeStr || rangeStr.length === 0) {
     return []
   }
   const indexRes = rangeStr.match(TabIndexReg)

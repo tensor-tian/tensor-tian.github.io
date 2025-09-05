@@ -1,5 +1,7 @@
 import { z } from "zod"
 import { Block, CodeBlock, parseProps } from "codehike/blocks"
+import { highlight, type HighlightedCode } from "codehike/code"
+import { theme } from "../config"
 
 export const CodeBlockFromFile = CodeBlock.extend({
   lineRanges: z.array(
@@ -9,9 +11,32 @@ export const CodeBlockFromFile = CodeBlock.extend({
     }),
   ),
 })
-
+export type Range = { from: number; to: number }
 export type CodeBlockType = z.infer<typeof CodeBlockFromFile>
 export type BlockType = z.infer<typeof Block>
+export type HighlightedCodeType = HighlightedCode & { lineRanges: Range[] }
+export type StepType = z.infer<typeof Block> & {
+  codes?: HighlightedCodeType[]
+  code?: HighlightedCodeType
+}
+
+export const StepsSchema = Block.extend({
+  steps: z.array(
+    Block.extend({
+      code: CodeBlock.optional().transform(transformCode),
+      codes: z
+        .array(CodeBlock)
+        .optional()
+        .transform((list, ctx) =>
+          list
+            ? list
+                .map((code) => transformCode(code, ctx))
+                .filter((code) => Boolean(code))
+            : [],
+        ),
+    }),
+  ),
+})
 
 const LinesReg = /!lines\((.*?)\)/
 export function transformCode(
@@ -85,5 +110,65 @@ export function transformCode(
       message: "解析 !lines 指令失败",
     })
     console.error("code:", code)
+  }
+}
+
+export async function hl(codeBlock: CodeBlockType | undefined) {
+  if (!codeBlock) return
+  const code = (await highlight(codeBlock, theme)) as HighlightedCodeType
+  return code
+}
+
+export async function parseSteps(props: any): Promise<StepType[]> {
+  const { steps } = parseProps(props, StepsSchema)
+  const stepsWithHLCode = (await Promise.all(
+    steps.map(async (step) => {
+      if (step.code) {
+        const code = await hl(step.code)
+        return { ...step, code } as StepType
+      } else if (Array.isArray(step.codes)) {
+        const codes = await Promise.all(
+          step.codes.map(async (c) => {
+            if (c) {
+              return hl(c)
+            }
+          }) as Promise<HighlightedCodeType>[],
+        )
+        return { ...step, codes } as StepType
+      }
+    }),
+  )) as StepType[]
+  return stepsWithHLCode
+}
+
+const TreePropsSchema = Block.extend({
+  right: Block.extend({
+    content: Block.optional(),
+    codes: z.array(CodeBlock.transform(transformCode)).optional(),
+  }),
+  left: Block,
+})
+
+export type TreeDataType = {
+  left: BlockType
+  right: {
+    content?: BlockType
+    codes?: HighlightedCodeType[]
+  }
+}
+
+export async function parseTreeProps(props: any): Promise<TreeDataType> {
+  const { left, right } = parseProps(props, TreePropsSchema)
+  const codes = right.codes
+    ? ((await Promise.all(
+        right.codes.map((c) => hl(c)),
+      )) as HighlightedCodeType[])
+    : []
+  return {
+    left,
+    right: {
+      content: right.content,
+      codes,
+    },
   }
 }
