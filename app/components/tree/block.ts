@@ -17,13 +17,11 @@ export type BlockType = z.infer<typeof Block>
 export type HighlightedCodeType = HighlightedCode & { lineRanges: Range[] }
 export type StepType = z.infer<typeof Block> & {
   codes?: HighlightedCodeType[]
-  code?: HighlightedCodeType
 }
 
 export const StepsSchema = Block.extend({
   steps: z.array(
     Block.extend({
-      code: CodeBlock.optional().transform(transformCode),
       codes: z
         .array(CodeBlock)
         .optional()
@@ -123,10 +121,7 @@ export async function parseSteps(props: any): Promise<StepType[]> {
   const { steps } = parseProps(props, StepsSchema)
   const stepsWithHLCode = (await Promise.all(
     steps.map(async (step) => {
-      if (step.code) {
-        const code = await hl(step.code)
-        return { ...step, code } as StepType
-      } else if (Array.isArray(step.codes)) {
+      if (Array.isArray(step.codes)) {
         const codes = await Promise.all(
           step.codes.map(async (c) => {
             if (c) {
@@ -135,6 +130,8 @@ export async function parseSteps(props: any): Promise<StepType[]> {
           }) as Promise<HighlightedCodeType>[],
         )
         return { ...step, codes } as StepType
+      } else {
+        return []
       }
     }),
   )) as StepType[]

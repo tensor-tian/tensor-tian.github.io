@@ -31,9 +31,7 @@ export async function List(props: any) {
         <div className="top-16 sticky overflow-auto h-full p-4">
           <Selection
             from={steps.map((step) =>
-              step.code ? (
-                <Code hlCode={step.code} />
-              ) : Array.isArray(step.codes) ? (
+              Array.isArray(step.codes) ? (
                 <CodeTabs codes={step.codes} />
               ) : null,
             )}

@@ -34,9 +34,7 @@ export async function Accordion(props: any) {
         <div className="w-[40vw] max-w-xl ml-4">
           <AccordionSelectionContent
             content={steps.map((step) =>
-              step?.code ? (
-                <Code hlCode={step.code} height={h} />
-              ) : Array.isArray(step?.codes) ? (
+              Array.isArray(step?.codes) ? (
                 <CodeTabs codes={step.codes} height={h} />
               ) : null,
             )}
