@@ -1,5 +1,4 @@
 import * as d3 from "d3"
-import build from "next/dist/build"
 
 const RED = true
 const BLACK = false

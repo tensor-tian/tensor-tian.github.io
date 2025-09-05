@@ -11,7 +11,10 @@ export function Link(props: { href?: string; children?: React.ReactNode }) {
     return <a {...props} />
   }
   return (
-    <Focusable className="cursor-pointer hover:font-bold" data-focus={focus}>
+    <Focusable
+      className="cursor-pointer hover:font-bold underline underline-offset-4"
+      data-focus={focus}
+    >
       {props.children}
     </Focusable>
   )

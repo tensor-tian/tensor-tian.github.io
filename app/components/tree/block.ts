@@ -11,6 +11,7 @@ export const CodeBlockFromFile = CodeBlock.extend({
 })
 
 export type CodeBlockType = z.infer<typeof CodeBlockFromFile>
+export type BlockType = z.infer<typeof Block>
 
 const LinesReg = /!lines\((.*?)\)/
 export function transformCode(

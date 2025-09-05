@@ -14,7 +14,7 @@ export function LLRBTreeViz<T>({
   tree,
   nodeRadius = 16,
   levelHeight = 50,
-  margin = { top: 30, left: 30, right: 0, bottom: 20 },
+  margin = { top: 30, left: 30, right: 0, bottom: 0 },
   className,
 }: Props) {
   const layout = computeRBTLayout(tree, nodeRadius, levelHeight, margin)
@@ -146,7 +146,7 @@ function computeRBTLayout(
     key: d.data.key,
     color: d.data.color,
     width: nodeRadius * 2,
-    height: nodeRadius * 2,
+  height: nodeRadius * 2,
   }))
   return { nodes, links, width, height }
 }
