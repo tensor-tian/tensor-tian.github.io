@@ -1,29 +1,25 @@
-"use client"
 import React from "react"
 import * as z from "zod"
-import { Code } from "./code"
-import { Block, CodeBlock, parseProps } from "codehike/blocks"
-import { BlockType, CodeBlockType, transformCode } from "./block"
+import { Code } from "./code.client"
+import {
+  BlockType,
+  CodeBlockType,
+  HighlightedCodeType,
+  parseTreeProps,
+} from "./block"
 import { FocusProvider } from "./focus-context"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-const TreePropsSchema = Block.extend({
-  right: z.object({
-    content: Block,
-    codes: z.array(CodeBlock.transform(transformCode)),
-  }),
-  left: Block,
-})
-
-export function Tree(props: any) {
-  const {
-    left,
-    right: { content, codes },
-  } = parseProps(props, TreePropsSchema)
+export async function Tree(props: any) {
+  const { left, right } = await parseTreeProps(props)
+  const { content, codes } = right
   if (!left.children) {
     return <div>Loading...</div>
   }
-  const tabs = [...codes, content]
+  const tabs: (BlockType | HighlightedCodeType)[] = codes ? [...codes] : []
+  if (content) {
+    tabs.push(content)
+  }
   const tabValues = tabs.map((tab) =>
     tab ? (isCodeBlock(tab) ? tab.meta : tab.title || "") : "",
   )
@@ -48,7 +44,7 @@ export function Tree(props: any) {
           if (!b) return null
           const name = tabValues[i]
           const content = isCodeBlock(b) ? (
-            <Code codeblock={b} height={props.height} tabIndex={i} />
+            <Code hlCode={b} height={props.height} tabIndex={i} />
           ) : (
             b.children
           )

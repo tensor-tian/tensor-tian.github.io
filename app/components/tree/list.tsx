@@ -3,15 +3,15 @@ import {
   Selectable,
   SelectionProvider,
 } from "codehike/utils/selection"
-import { parseProps } from "codehike/blocks"
 import { CodeTabs } from "./code-tab"
 
 import React from "react"
-import { Code } from "./code"
-import { StepsSchema } from "./steps"
+import { Code } from "./code.client"
+import { parseSteps } from "./block"
 
-export function List(props: any) {
-  const { steps } = parseProps(props, StepsSchema)
+export async function List(props: any) {
+  const steps = await parseSteps(props)
+
   return (
     <SelectionProvider className="flex ">
       <div className="flex-1 mt-4 ml-2 prose prose-invert prose-h2:mt-4">
@@ -32,7 +32,7 @@ export function List(props: any) {
           <Selection
             from={steps.map((step) =>
               step.code ? (
-                <Code codeblock={step.code} />
+                <Code hlCode={step.code} />
               ) : Array.isArray(step.codes) ? (
                 <CodeTabs codes={step.codes} />
               ) : null,

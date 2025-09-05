@@ -1,9 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CodeBlockType } from "./block"
-import { Code } from "./code"
+import { HighlightedCodeType } from "./block"
+import { Code } from "./code.client"
 
 export function CodeTabs(props: {
-  codes: (CodeBlockType | undefined)[]
+  codes: (HighlightedCodeType | undefined)[]
   height?: number
 }) {
   const { codes } = props
@@ -17,20 +17,20 @@ export function CodeTabs(props: {
       className="dark border-zinc-700 border rounded mx-h-[50vh]"
     >
       <TabsList className="rounded">
-        {codes.map((tab, i) => {
-          if (!tab) return null
+        {codes.map((code, i) => {
+          if (!code) return null
           return (
-            <TabsTrigger key={tab.meta} value={tab.meta} className="rounded">
-              {tab.meta}
+            <TabsTrigger key={code.meta} value={code.meta} className="rounded">
+              {code.meta}
             </TabsTrigger>
           )
         })}
       </TabsList>
-      {codes.map((tab, i) => {
-        if (!tab) return null
+      {codes.map((code, i) => {
+        if (!code) return null
         return (
-          <TabsContent key={tab.meta} value={tab.meta} className="mt-0">
-            <Code codeblock={tab} height={props.height} tabIndex={i} />
+          <TabsContent key={code.meta} value={code.meta} className="mt-0">
+            <Code hlCode={code} height={props.height} tabIndex={i} />
           </TabsContent>
         )
       })}
