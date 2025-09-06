@@ -1,69 +1,29 @@
 import React from "react"
-import * as z from "zod"
-import { Code } from "./code.client"
-import {
-  BlockType,
-  CodeBlockType,
-  HighlightedCodeType,
-  parseTreeProps,
-} from "./block"
-import { FocusProvider } from "./focus-context"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import { BlockType, HighlightedCodeType, parseTreeProps } from "./block"
+import { FocusProvider, TabsFocused } from "./focus-context"
+import { cn, maxHeight } from "@/lib/utils"
 
 export async function Tree(props: any) {
   const { left, right } = await parseTreeProps(props)
-  const { content, codes } = right
+  const h = maxHeight(props.className)
+  const { contents, codes } = right
   if (!left.children) {
     return <div>Loading...</div>
   }
   const tabs: (BlockType | HighlightedCodeType)[] = codes ? [...codes] : []
-  if (content) {
-    tabs.push(content)
+  if (contents && contents.length > 0) {
+    tabs.push(...contents)
   }
-  const tabValues = tabs.map((tab) =>
-    tab ? (isCodeBlock(tab) ? tab.meta : tab.title || "") : "",
-  )
-  console.log("tab values: ", tabValues)
   return (
-    <FocusProvider className="flex">
-      <div className="flex-1 mt-4 ml-2 mr-2">{left.children}</div>
-      <Tabs
-        className="w-[40vw] max-w-xl dark borer-zinc-700 border rounded mx-h-[50vh]"
-        defaultValue={tabValues[tabValues.length - 1]}
-      >
-        <TabsList className="rounded">
-          {tabValues.map((v, i) => {
-            return (
-              <TabsTrigger key={i} value={v} className="rounded">
-                {v}
-              </TabsTrigger>
-            )
-          })}
-        </TabsList>
-        {tabs.map((b, i) => {
-          if (!b) return null
-          const name = tabValues[i]
-          const content = isCodeBlock(b) ? (
-            <Code hlCode={b} height={props.height} tabIndex={i} />
-          ) : (
-            b.children
-          )
-          return (
-            <TabsContent key={i} value={name} className="mt-0">
-              {content}
-            </TabsContent>
-          )
-        })}
-      </Tabs>
-    </FocusProvider>
-  )
-}
-
-function isCodeBlock(data: CodeBlockType | BlockType): data is CodeBlockType {
-  const candidate = data as CodeBlockType
-  return (
-    typeof candidate?.value === "string" &&
-    typeof candidate?.meta === "string" &&
-    typeof candidate?.lang === "string"
+    <div>
+      {props.children}
+      <FocusProvider className={cn("flex ", props.className)}>
+        <div className="flex-1 mt-4 ml-2 mr-2 overflow-y-auto">
+          {left.children}
+        </div>
+        <TabsFocused tabs={tabs} height={h} />
+      </FocusProvider>
+    </div>
   )
 }

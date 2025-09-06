@@ -101,7 +101,7 @@ func (t *RedBlackTree) Delete(key int) (val int, ok bool) {
 func (o *node) del(key int) (x *node) {
 	x = o
 	if key < x.key {
-		// x 或 x.left 是红色
+
 		if !x.left.isRed() && !x.left.left.isRed() {
 			x = x.moveRedLeft()
 		}
