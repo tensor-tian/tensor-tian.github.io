@@ -8,12 +8,9 @@ import {
   AccordionContent,
   AccordionSelectionContent,
 } from "@/components/ui/accordion"
-import { FocusProvider } from "./focus-context"
-
+import { FocusProvider, TabsFocused } from "./focus-context"
 import React from "react"
-import { Code } from "./code.client"
-import { CodeTabs } from "./code-tab"
-import { cn } from "@/lib/utils"
+import { cn, maxHeight } from "@/lib/utils"
 import { parseSteps } from "./block"
 
 export async function Accordion(props: any) {
@@ -35,7 +32,7 @@ export async function Accordion(props: any) {
           <AccordionSelectionContent
             content={steps.map((step) =>
               Array.isArray(step?.codes) ? (
-                <CodeTabs codes={step.codes} height={h} />
+                <TabsFocused tabs={step.codes} height={h} />
               ) : null,
             )}
           />
@@ -43,16 +40,4 @@ export async function Accordion(props: any) {
       </AccordionSelectionProvider>
     </FocusProvider>
   )
-}
-
-const HeightReg = /h-\[(\d+)px\]/
-function maxHeight(cls?: string): number {
-  if (!cls) return -1
-  for (const c of cls.split(" ")) {
-    const ret = c.match(HeightReg)
-    if (ret) {
-      return parseInt(ret[1], 10)
-    }
-  }
-  return -1
 }

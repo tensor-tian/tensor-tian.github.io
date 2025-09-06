@@ -3,17 +3,17 @@ import {
   Selectable,
   SelectionProvider,
 } from "codehike/utils/selection"
-import { CodeTabs } from "./code-tab"
 
 import React from "react"
-import { Code } from "./code.client"
 import { parseSteps } from "./block"
+import { TabsFocused } from "./focus-context"
+import { cn, maxHeight } from "@/lib/utils"
 
 export async function List(props: any) {
   const steps = await parseSteps(props)
-
+  const h = maxHeight(props.className)
   return (
-    <SelectionProvider className="flex ">
+    <SelectionProvider className={cn("flex ", props.className)}>
       <div className="flex-1 mt-4 ml-2 prose prose-invert prose-h2:mt-4">
         {steps.map((step, i) => (
           <Selectable
@@ -32,7 +32,7 @@ export async function List(props: any) {
           <Selection
             from={steps.map((step) =>
               Array.isArray(step.codes) ? (
-                <CodeTabs codes={step.codes} />
+                <TabsFocused tabs={step.codes} height={h} />
               ) : null,
             )}
           />

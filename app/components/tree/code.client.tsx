@@ -1,8 +1,8 @@
 "use client"
-import React from "react"
+import React, { useContext } from "react"
 import { Code as CodeSSC } from "./code"
 import { HighlightedCodeType, Range } from "./block"
-import { useFocusRange } from "./focus-context"
+import { FocusContext, useFocusRange } from "./focus-context"
 
 export type CodeProps = {
   hlCode: HighlightedCodeType
@@ -11,11 +11,12 @@ export type CodeProps = {
 }
 export const CodeContext = React.createContext<Range[]>([])
 
-export function Code(props: CodeProps) {
-  const focusRange = useFocusRange()
+export function Code({ tabIndex, ...rest }: CodeProps) {
+  const { focus, tabIndex: activeTabIndex } = useContext(FocusContext)
+  const focusRange = activeTabIndex != String(tabIndex) ? "" : focus
   return (
-    <CodeContext.Provider value={props.hlCode.lineRanges}>
-      <CodeSSC {...props} focusRange={focusRange} />
+    <CodeContext.Provider value={rest.hlCode.lineRanges}>
+      <CodeSSC {...rest} focusRange={focusRange} />
     </CodeContext.Provider>
   )
 }

@@ -140,7 +140,7 @@ export async function parseSteps(props: any): Promise<StepType[]> {
 
 const TreePropsSchema = Block.extend({
   right: Block.extend({
-    content: Block.optional(),
+    contents: z.array(Block).optional(),
     codes: z.array(CodeBlock.transform(transformCode)).optional(),
   }),
   left: Block,
@@ -149,7 +149,7 @@ const TreePropsSchema = Block.extend({
 export type TreeDataType = {
   left: BlockType
   right: {
-    content?: BlockType
+    contents?: BlockType[]
     codes?: HighlightedCodeType[]
   }
 }
@@ -161,10 +161,11 @@ export async function parseTreeProps(props: any): Promise<TreeDataType> {
         right.codes.map((c) => hl(c)),
       )) as HighlightedCodeType[])
     : []
+  const contents = right.contents ?? []
   return {
     left,
     right: {
-      content: right.content,
+      contents,
       codes,
     },
   }

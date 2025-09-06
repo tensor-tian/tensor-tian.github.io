@@ -3,30 +3,46 @@ import * as d3 from "d3"
 import { LLRBTree, RBNode } from "./LLRBTree"
 import { cn } from "@/lib/utils"
 
+const Size = {
+  m: {
+    nodeRadius: 16,
+    levelHeight: 50,
+    margin: {
+      top: 30,
+      left: 30,
+      right: 0,
+      bottom: 0,
+    },
+  },
+  s: {
+    nodeRadius: 10,
+    levelHeight: 30,
+    margin: {
+      top: 18,
+      left: 18,
+      right: 0,
+      bottom: 0,
+    },
+  },
+}
+
 export type Props = {
   tree: LLRBTree | undefined | null
-  nodeRadius?: number
-  levelHeight?: number
-  margin?: { top: number; left: number; right: number; bottom: number }
+  size?: "m" | "s"
 } & React.HTMLAttributes<HTMLOrSVGElement>
 
-export function LLRBTreeViz<T>({
-  tree,
-  nodeRadius = 16,
-  levelHeight = 50,
-  margin = { top: 30, left: 30, right: 0, bottom: 0 },
-  className,
-}: Props) {
-  const layout = computeRBTLayout(tree, nodeRadius, levelHeight, margin)
+export function LLRBTreeViz<T>({ tree, size = "m", className }: Props) {
+  const layout = computeRBTLayout(tree, size)
   if (!layout?.nodes.length) {
     return <span className="text-gray-500">No tree data available</span>
   }
   const { nodes, links, width, height } = layout
+  const sz = Size[size] ?? Size["m"]
   return (
     <svg
       width={width}
       height={height}
-      className={cn("bg-zinc-800 inline-block", className)}
+      className={cn("bg-zinc-950 inline-block", className)}
     >
       {/* 渲染链接 */}
       {links.map((link, index) => (
@@ -53,10 +69,10 @@ export function LLRBTreeViz<T>({
           transform={`translate(${node.x},${node.y})`}
         >
           <circle
-            r={nodeRadius}
-            strokeWidth={2}
+            r={sz.nodeRadius}
+            strokeWidth={size === "m" ? 2 : 1}
             className={cn(
-              "node-circle stoke-1 stroke-zinc-100 fill-zinc-800",
+              "node-circle stoke-1 stroke-zinc-100 fill-zinc-950",
               node.color ? "stroke-red-500" : "stroke-zinc-100",
             )}
           />
@@ -68,6 +84,7 @@ export function LLRBTreeViz<T>({
               node.color
                 ? "stroke-red-500 fill-red-500"
                 : "stroke-zinc-100 fill-zinc-100",
+              size === "m" ? "text-sm" : "text-xs",
             )}
           >
             {node.key}
@@ -93,19 +110,17 @@ export interface TreeLink {
   color: string
   strokeWidth: number
 }
-function computeRBTLayout(
-  tree: LLRBTree | null | undefined,
-  nodeRadius: number = 16,
-  levelHeight: number = 50,
-  margin: { top: number; left: number; right: number; bottom: number },
-) {
+function computeRBTLayout(tree: LLRBTree | null | undefined, size: "m" | "s") {
   if (!tree) {
     return
   }
+  // console.log(JSON.stringify(tree.root, null, 2))
   const rootData = tree.toHierarchy()
   if (!rootData) return
-  // console.log("rootData:", rootData)
-  const layout = d3.tree<RBNode>().nodeSize([60, levelHeight])
+  const sz = Size[size] ?? Size["m"]
+  const layout = d3
+    .tree<RBNode>()
+    .nodeSize([sz.levelHeight * 1.1, sz.levelHeight])
   const root = layout(rootData)
   let minX = Number.MAX_SAFE_INTEGER,
     minY = Number.MAX_SAFE_INTEGER,
@@ -113,9 +128,18 @@ function computeRBTLayout(
     maxY = Number.MIN_SAFE_INTEGER
   root.each((d) => {
     if (d.parent && d.parent.children?.length == 1) {
-      d.each((o) => {
-        o.x -= 20
-      })
+      if (d.parent.data.key === "2") {
+        console.log(d.parent.data)
+      }
+      if (d.parent.data.left) {
+        d.each((o) => {
+          o.x -= 20
+        })
+      } else {
+        d.each((o) => {
+          o.x += 20
+        })
+      }
     }
   })
 
@@ -125,28 +149,30 @@ function computeRBTLayout(
     minY = Math.min(minY, d.y)
     maxY = Math.max(maxY, d.y)
   })
-  const width = maxX - minX + margin.left + margin.right + nodeRadius * 2
-  const height = maxY - minY + margin.top + margin.bottom + nodeRadius * 2
+  const width =
+    maxX - minX + sz.margin.left + sz.margin.right + sz.nodeRadius * 2
+  const height =
+    maxY - minY + sz.margin.top + sz.margin.bottom + sz.nodeRadius * 2
   const links = root.links().map((link) => ({
     source: {
-      x: link.source.x - minX + margin.left,
-      y: link.source.y - minY + margin.top,
+      x: link.source.x - minX + sz.margin.left,
+      y: link.source.y - minY + sz.margin.top,
     },
     target: {
-      x: link.target.x - minX + margin.left,
-      y: link.target.y - minY + margin.top,
+      x: link.target.x - minX + sz.margin.left,
+      y: link.target.y - minY + sz.margin.top,
     },
     color: link.target.data.color ? "red" : "black",
     strokeWidth: link.target.data.color ? 4 : 2,
   }))
   // 生成节点数据
   const nodes: TreeNode[] = root.descendants().map((d: any) => ({
-    x: d.x - minX + margin.left,
-    y: d.y - minY + margin.top,
+    x: d.x - minX + sz.margin.left,
+    y: d.y - minY + sz.margin.top,
     key: d.data.key,
     color: d.data.color,
-    width: nodeRadius * 2,
-  height: nodeRadius * 2,
+    width: sz.nodeRadius * 2,
+    height: sz.nodeRadius * 2,
   }))
   return { nodes, links, width, height }
 }
