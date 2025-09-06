@@ -38,7 +38,7 @@ export function Code({ hlCode, height, tabIndex, focusRange }: CodeProps) {
   )
 }
 
-const TabIndexReg = /^@(\d+)/
+export const TabIndexReg = /^@(\d+)/
 
 function genFocusAnnotation(
   lineRanges: Range[],

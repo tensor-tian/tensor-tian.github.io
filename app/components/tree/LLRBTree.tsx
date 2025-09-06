@@ -135,4 +135,17 @@ export class LLRBTree {
     })
     return root
   }
+  toMap(): Map<string, RBNode> {
+    const map = new Map<string, RBNode>()
+    function dfs(x: RBNode | null | undefined) {
+      if (!x) {
+        return
+      }
+      map.set(x.key, x)
+      dfs(x.left)
+      dfs(x.right)
+    }
+    dfs(this.root)
+    return map
+  }
 }
