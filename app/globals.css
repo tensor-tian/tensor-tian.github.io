@@ -10,8 +10,9 @@ h2 {
 }
 .katex {
   font-size: 1em;
+  /* z-index: auto !important; */
+  /* position: relative; */
 }
-
 @layer base {
   :root {
     --background: 0 0% 100%;

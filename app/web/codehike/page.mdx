@@ -1,0 +1,20 @@
+
+### _`pnpm build`_ 执行之后如何把 .mdx 文件转成 React HTML 静态页面
+整个流程由 `createMDX` 串联，Next.js 自动调用，无需手动插入。
+
+1. **MDX 文件读取与解析**  
+  Next.js 配合 MDX 插件（如 `@next/mdx`）会在构建时读取 `.mdx` 文件，解析为 Markdown AST。  
+  `remarkPlugins` 负责处理 Markdown AST，包括语法扩展和内容转换。
+
+2. **MDX 转 React 组件**  
+  解析器将 Markdown + JSX 语法转为 MDX AST，再由 `recmaPlugins` 处理，最终生成 React 组件树。  
+  这样你可以在 Markdown 中直接写 React 代码。
+
+3. **页面静态生成（SSG）**  
+  Next.js 会自动遍历所有页面（包括 `.mdx`），静态生成每个页面。  
+  在渲染为 HTML 前，`rehypePlugins`（如 `rehypeKatex`）会处理 HTML AST，对最终 HTML 进行优化和转换。
+
+4. **HTML 导出**  
+  `pnpm build` 执行 `next build`，随后 `next export`（如果配置了静态导出），把所有页面渲染为静态 HTML 文件。  
+  这些 HTML 文件就是最终部署到 GitHub Pages 的静态站点。
+
