@@ -28,4 +28,13 @@ const withMDX = createMDX({
 })
 
 // Merge MDX config with Next.js config
-export default withMDX(nextConfig)
+const mdxNextConfig = withMDX(nextConfig)
+
+export default {
+  ...mdxNextConfig,
+  webpack(config, options) {
+    // console.log("webpack config:", config)
+    // console.log("webpack options:", options)
+    return mdxNextConfig.webpack && mdxNextConfig.webpack(config, options)
+  },
+}

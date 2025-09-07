@@ -1,7 +1,6 @@
 "use client"
 import { Focusable } from "./focus-context"
 import React from "react"
-import { MDXProvider } from "@mdx-js/react"
 
 export function P(props: React.HTMLAttributes<HTMLParagraphElement>) {
   let children = React.Children.toArray(props.children)
@@ -60,12 +59,4 @@ export function ListItem(props: { children: React.ReactNode }) {
 const FocusableComponents = {
   p: P,
   li: ListItem,
-}
-
-export function FocusableMDXProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return <MDXProvider components={FocusableComponents}>{children}</MDXProvider>
 }

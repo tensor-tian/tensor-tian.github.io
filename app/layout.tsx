@@ -16,7 +16,7 @@ type LinkProps = React.ComponentProps<typeof Link>
 
 function Nav({ children, className, ...rest }: LinkProps) {
   return (
-    <nav className="w-16 h-full flex items-center justify-center text-center">
+    <nav className="w-20 h-full flex items-center justify-center text-center hover:bg-zinc-700 hover:text-white">
       <Link
         {...rest}
         className={cn(
@@ -53,7 +53,7 @@ export default function RootLayout({
             <Nav href="/">Other</Nav>
           </div>
         </header>
-        <main className="top-16 max-w-6xl mx-auto">{children}</main>
+        <main className="top-16 max-w-6xl mx-auto pt-10">{children}</main>
       </body>
     </html>
   )
