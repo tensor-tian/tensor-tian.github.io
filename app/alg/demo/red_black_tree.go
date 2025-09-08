@@ -1,4 +1,4 @@
-package redBlackTree
+package demo
 
 const (
 	colorRed   = true

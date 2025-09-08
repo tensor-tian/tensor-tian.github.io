@@ -1,6 +1,4 @@
-package main
-
-import "fmt"
+package demo
 
 func indexOf(nums []int, target int) int {
 	l, r := 0, len(nums)-1
@@ -43,17 +41,4 @@ func binarySearch2(n int, f func(int) bool) int {
 		}
 	}
 	return l
-}
-
-func main() {
-	const N = 1000
-	nums := make([]int, N)
-	for i := range nums {
-		nums[i] = 1 + i*2
-	}
-	target := 40
-	idx := binarySearch(len(nums), func(mid int) bool {
-		return nums[mid] >= target
-	})
-	fmt.Println(idx < N && nums[idx] == target, idx, nums[idx], nums[idx-1], nums[idx+1])
 }

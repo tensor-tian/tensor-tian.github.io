@@ -1,0 +1,25 @@
+{
+  "name": "copy-code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "mdast": "^3.0.0",
+    "hasha": "^6.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4",
+    "@types/mdast": "^4.0.4",
+    "@types/mdx": "2.0.13"
+  }
+}
