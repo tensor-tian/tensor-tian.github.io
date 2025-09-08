@@ -28,12 +28,12 @@ _rbt_insert|红黑树示例|s`a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,
 - [红黑树插入键值的实现和二叉树相比，插入后的递归回溯阶段多一步平衡操作。](!focus#68,80:81)
 
 
-```go  !!codes !lines(49:62,67:82)  red_black_tree.go 
-!from ./red_black_tree.go 49:82
+```go  !!codes 
+!from ../demo/red_black_tree.go 49:62,67:82
 ```
 
-```go !!codes !lines(64:73,74:81) red_black_tree_test.go
-!from ./red_black_tree_test.go 64:81
+```go !!codes
+!from ../demo/red_black_tree_test.go 64:73,74:811
 ```
 ### !!steps 红黑结点
 
@@ -42,8 +42,8 @@ _rbt_insert|红黑树示例|s`a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,
 [和二叉树相比，红黑树结点结构中多一个 _go`color bool`_ 字段，标记结点当前颜色。](!focus#8,11)
 
 
-```go !!codes  !lines(2:21) red_black_tree.go
-!from ./red_black_tree.go 2:21
+```go !!codes 
+!from ../demo/red_black_tree.go 2:21
 ```
 ### !!steps 左倾
 为了方便代码实现，我们规定「红链接均为左链接」，即[平衡操作完成后红色结点均为左子结点。](!focus#199,205)
@@ -55,8 +55,8 @@ _rbt_insert|红黑树示例|s`a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,
 如果不加约束，树的表示就不唯一，代码维护也很麻烦。
 约定左倾后，每个 3-结点只有左倾这一种表示方式，插入删除时只需要处理固定的几种情况，可以大幅简化代码实现。
 
-```go !!codes !lines(197:211) red_black_tree.go
-!from ./red_black_tree.go 197:211
+```go !!codes 
+!from ../demo/red_black_tree.go 197:211
 ```
 
 ### !!steps 黑根
@@ -66,8 +66,8 @@ _rbt_insert|红黑树示例|s`a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,
 - 黑结点高度规定为「任意空链接到根结点的简单路径上的黑链接数量」，这保证了任一黑高路径至少有一半是黑结点。
 - 操作结束后，最后一步会强制将根结点改成黑。[删除时判断是否需要将根结点标红的逻辑会更简单。](!focus#90:92)
 
-```go !!codes !lines(62:67,82:100) red_black_tree.go
-!from ./red_black_tree.go 62:100
+```go !!codes 
+!from ../demo/red_black_tree.go 62:67,82:100
 ```
 ### !!steps 黑叶子
 所有的叶子节点（ NIL 节点）都是黑色的。 红黑树将二叉树的叶子结点的 NIL 子结点视为叶子结点，并约定颜色为黑色。
@@ -77,8 +77,8 @@ _rbt_insert|红黑树示例|s`a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,
 - 删除操作中也有 _go`x.left.left.isRed()`_, _go`x.right.left.isRed()`_ 条件判断。
 
 
-```go !!codes !lines(14:21,196:211) red_black_tree.go
-!from ./red_black_tree.go 14:211
+```go !!codes 
+!from ../demo/red_black_tree.go 14:21,196:211
 ```
 
 ### !!steps 完美黑平衡 ❗️
@@ -88,16 +88,16 @@ _rbt_insert|红黑树示例|s`a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,
 简单证明下：
 - 左倾红黑树最坏的情况是构成树根到最左边叶子结点的路径是红黑相间的，而树根到最右边叶子结点的路径全是黑的。最右侧结点数量上界 $\lg N$，所以左边路径结点数量上界 $2\lg N$，完成证明。
 
-```go !!codes !lines(63:73,87:110) red_black_tree_test.go
-!from ./red_black_tree_test.go 63:110
+```go !!codes 
+!from ../demo/red_black_tree_test.go 63:73,87:110
 ```
 ### !!steps 无连续红结点 ❗️
 [如果一个节点是红色的，那么它的子节点必须是黑色的（即不能有两个连续的红色节点）。](!focus#69,81,85) 红色结点不连续，才能保证「完美黑高平衡」 是有意义的，从而保证各种操作的时间复杂度都能制在 $O(\lg n)$。
 
 红黑树可以理解为用 红黑结点组成的二叉树 模拟实现 「2-3平衡查找树」 ，将红结点和它的父结点共同组成 3-结点。若出现连续的两个红结点，则出现了4-结点，2-3树 不允许这种情况出现。
 
-```go !!codes !lines(63:73,81:86) red_black_tree_test.go
-!from ./red_black_tree_test.go 63:86
+```go !!codes 
+!from ../demo/red_black_tree_test.go 63:73,81:86
 ```
 
 </Accordion>
@@ -121,8 +121,8 @@ _rbt_level|翻转后`p,o,null,l|red,r|red`_
 _rbt_level|翻转前`p,o|red,null,l,r`_
 </div>
 
-```go !!codes !lines(169:174) red_black_tree.go
-!from ./red_black_tree.go 169:174
+```go !!codes 
+!from ../demo/red_black_tree.go 169:174
 ```
 #### !!steps 红色向下传递
 
@@ -132,8 +132,8 @@ _rbt_level|翻转前`p,o|red,null,l,r`_
 _rbt_level|翻转后`p,o,null,l|red,r|red`_
 </div>
 
-```go !!codes !lines(169:174) red_black_tree.go
-!from ./red_black_tree.go 169:174
+```go !!codes 
+!from ../demo/red_black_tree.go 169:174
 ```
 
 #### !!steps 可能破坏「无连续红结点」
@@ -162,8 +162,8 @@ _rbt_level|左旋`o,l,r|red,null,null,rl,rr:rotateLeft(o):r,o|red,rr,l,rl`_
   - [旋转后 _go`l.r -> o, o.l -> lr`_](!focus#162)
 
 
-```go !!codes !lines(151:167) red_black_tree.go
-!from ./red_black_tree.go 151:167
+```go !!codes 
+!from ../demo/red_black_tree.go 151:167
 ```
 ### !!steps 旋转不会破环「完美黑平衡」
 
@@ -181,8 +181,8 @@ _rbt_level|左旋`o,l,r|red,null,null,rl,rr:rotateLeft(o):r,o|red,rr,l,rl`_
 
 但是，旋转操纵红色结点的左右的转移只是相对于红黑树来说的，旋转前后红色链接仍在父结点同一个子结点之间，并不能红链接转移到父结点和另一个字节上面。
 
-```go !!codes !lines(151:167,197:210) red_black_tree.go
-!from ./red_black_tree.go 151:210
+```go !!codes 
+!from ../demo/red_black_tree.go 151:167,197:210
 ```
 
 </Accordion>
@@ -227,8 +227,8 @@ _rbt_level|左旋`o,l,r|red,null,null,rl,rr:rotateLeft(o):r,o|red,rr,l,rl`_
 
 ### !right
 
-```go !!codes !lines(63:81,196:210) red_black_tree.go
-!from ./red_black_tree.go 63:210
+```go !!codes 
+!from ../demo/red_black_tree.go 63:81,196:210
 ```
 
 #### !!contents 平衡操作
@@ -285,8 +285,8 @@ _go`delMin()`_ 会一直沿着左链接到达最左边叶子结点的父元素�
 
 ### !right
 
-```go !!codes !lines(130:141,175:185) red_black_tree.go
-!from ./red_black_tree.go 130:185
+```go !!codes 
+!from ../demo/red_black_tree.go 130:141,175:185
 ```
 
 #### !!contents moveRedLeft()
@@ -294,7 +294,6 @@ _go`delMin()`_ 会一直沿着左链接到达最左边叶子结点的父元素�
 _rbt_level|1.右侧红结点不连续!left|s`5|red,3,7,2,null,6:flipColor(5):5,3|red,7|red,2,null,6`_
 
 _rbt_level|2.修复右侧红结点连续!left|s`5|red,3,7,2,null,6|red:flipColor(5):5,3|red,7|red,2,null,6|red:rotateRight(7):5,3|red,6|red,2,null,null,7|red:rotateLeft(5):6,5|red,7|red,3|red,null,null,null,2:flipColor(6):6|red,5,7,3|red,null,null,null,2`_
-
 
 </Tree>
 
@@ -308,8 +307,8 @@ _rbt_level|2.修复右侧红结点连续!left|s`5|red,3,7,2,null,6|red:flipColor
 
 #### !right
 
-```go !!codes !lines(101:128,186:194) red_black_tree.go
-!from ./red_black_tree.go 101:194
+```go !!codes 
+!from ../demo/red_black_tree.go 101:128,186:194
 ```
 ##### !!contents moveRedRight()
 
@@ -357,8 +356,8 @@ _rbt_level|修复左侧红结点连续!left|s`5|red,3,7,1|red,null,6::5,3|red,7|
 5. 执行二叉树递归删除，继续[沿右侧链接删除结点](!focus#103,109,119,123:125)
 #### !right
 
-```go !!codes !lines(83:128) red_black_tree.go
-!from ./red_black_tree.go 83:128
+```go !!codes 
+!from ../demo/red_black_tree.go 83:128
 ```
 
 </Tree>
