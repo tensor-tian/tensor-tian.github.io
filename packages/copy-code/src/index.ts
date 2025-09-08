@@ -34,12 +34,12 @@ const remarkCopyCodeFile: Plugin<[], Root, Root> = () => {
             }
             // copy to mdx dir
             ;({ codepath, name } = await copyFile(codepath, mdPath, range))
-            let b = -1,
-              e = -1
+            let b = "",
+              e = ""
             const parts = range.split(",")
             for (const part of parts) {
-              const [from, to] = part.split(":").map((x) => parseInt(x, 10))
-              if (b === -1) {
+              const [from, to] = part.split(":")
+              if (b === "") {
                 b = from
               }
               e = from
